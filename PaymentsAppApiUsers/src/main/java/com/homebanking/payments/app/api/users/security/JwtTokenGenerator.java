@@ -1,7 +1,6 @@
 package com.homebanking.payments.app.api.users.security;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.env.Environment;
@@ -24,7 +23,7 @@ public class JwtTokenGenerator {
         Instant now = Instant.now();
         long expirationTimeMillis = Long.parseLong(environment.getProperty("token.expiration_time"));
 
-        String tokenSecret = RandomStringUtils.randomAlphanumeric(64);
+        String tokenSecret = environment.getProperty("token.secret");
         byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
         SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
 
