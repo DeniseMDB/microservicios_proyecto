@@ -60,8 +60,8 @@ public class WebSecurity {
                 .cors(cors -> {
                 })
                 .csrf((csrf) -> csrf.disable())
-                .authorizeHttpRequests((authz) -> authz.requestMatchers(HttpMethod.POST, "/users")
-                        .access(new WebExpressionAuthorizationManager(
+                .authorizeHttpRequests((authz) -> authz.requestMatchers(new AntPathRequestMatcher("/users/**")).access
+                                (new WebExpressionAuthorizationManager(
                                 "hasIpAddress('" + environment.getProperty("gateway.ip") + "')"))
                         .requestMatchers(HttpMethod.POST, environment.getProperty("login.url.path")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
