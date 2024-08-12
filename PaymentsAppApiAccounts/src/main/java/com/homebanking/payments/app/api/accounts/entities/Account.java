@@ -1,4 +1,4 @@
-package entities;
+package com.homebanking.payments.app.api.accounts.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Data
 @Table(name = "accounts")
 @NoArgsConstructor
-public class AccountEntity implements Serializable {
+public class Account implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 5562041478278499940L;
