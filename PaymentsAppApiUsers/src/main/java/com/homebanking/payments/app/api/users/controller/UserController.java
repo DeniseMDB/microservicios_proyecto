@@ -16,12 +16,16 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
     UserService userService;
+    Environment env;
+    RestTemplate restTemplate;
+
     @Autowired
-    private Environment env;
-//    @Autowired
-//    RestTemplate restTemplate;
+    public UserController(Environment env, RestTemplate restTemplate, UserService userService) {
+        this.env = env;
+        this.restTemplate = restTemplate;
+        this.userService = userService;
+    }
 
     @GetMapping("/status/check")
         public String status()
@@ -38,4 +42,14 @@ public class UserController {
         UserResponseModel returnValue = modelMapper.map(createdUser, UserResponseModel.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseModel> getUserAccounts(@PathVariable("userId") String userId){
+        UserDto userDto = userService.getUserByUserId(userId);
+        UserResponseModel returnValue = new ModelMapper().map(userDto,UserResponseModel.class);
+        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
+    }
+
+
+
 }

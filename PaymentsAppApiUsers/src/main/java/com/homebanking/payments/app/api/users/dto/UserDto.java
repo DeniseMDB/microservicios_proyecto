@@ -1,9 +1,11 @@
 package com.homebanking.payments.app.api.users.dto;
 
+import com.homebanking.payments.app.api.users.model.AccountsModel;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class UserDto implements Serializable {
@@ -16,4 +18,5 @@ public class UserDto implements Serializable {
     private String email;
     private String userId;
     private String encryptedPassword;
+    private AccountsModel account;
 }

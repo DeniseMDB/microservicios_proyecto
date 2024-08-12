@@ -2,29 +2,43 @@ package com.homebanking.payments.app.api.users.service;
 
 import com.homebanking.payments.app.api.users.dto.UserDto;
 import com.homebanking.payments.app.api.users.entity.UserEntity;
+import com.homebanking.payments.app.api.users.model.AccountsModel;
 import com.homebanking.payments.app.api.users.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UserService implements IUserService {
 
+    UserRepository userRepository;
+    BCryptPasswordEncoder passwordEncoder;
+    Environment environment;
+    RestTemplate restTemplate;
+
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-    @Autowired
-    private Environment environment;
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
+                       Environment environment, RestTemplate restTemplate){
+        this.userRepository= userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.environment = environment;
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public UserDto createUser(UserDto userDetails) {
@@ -57,21 +71,14 @@ public class UserService implements IUserService {
     public UserDto getUserByUserId(String userId) {
         UserEntity userEntity = userRepository.findByUserId(userId);
         if (userEntity == null) throw new UsernameNotFoundException("User not found");
-
-        return new ModelMapper().map(userEntity, UserDto.class);
+        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+        String accountsUrl = String.format(environment.getProperty("accounts.url"), userId);
+        ResponseEntity <AccountsModel> accountsResponse = restTemplate.exchange(accountsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<AccountsModel>() {
+        });
+        AccountsModel accounts = accountsResponse.getBody();
+        userDto.setAccount(accounts);
+        return userDto;
     }
-
 }
-//
-//    @Autowired
-//
-//
-//    public User saveUser(User user) {
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        return userRepository.save(user);
-//    }
-//
-//    public User findByUsername(String username) {
-//        return userRepository.findByUsername(username);
-//    }
+
 

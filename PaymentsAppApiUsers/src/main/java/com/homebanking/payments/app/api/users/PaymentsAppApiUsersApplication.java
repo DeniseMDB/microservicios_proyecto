@@ -21,10 +21,10 @@ public class PaymentsAppApiUsersApplication {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    @LoadBalanced
-//    public RestTemplate getRestTemplate(){
-//        return new RestTemplate();
-//    }
+    @Bean
+    @LoadBalanced
+    public RestTemplate getRestTemplate(){
+        return new RestTemplate();
+    }
 
 }
