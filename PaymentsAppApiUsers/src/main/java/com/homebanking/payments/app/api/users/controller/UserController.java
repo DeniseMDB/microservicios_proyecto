@@ -3,7 +3,7 @@ package com.homebanking.payments.app.api.users.controller;
 import com.homebanking.payments.app.api.users.dto.UserDto;
 import com.homebanking.payments.app.api.users.model.UserRequestModel;
 import com.homebanking.payments.app.api.users.model.UserResponseModel;
-import com.homebanking.payments.app.api.users.service.UserService;
+import com.homebanking.payments.app.api.users.service.IUserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +16,12 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    UserService userService;
+    IUserService userService;
     Environment env;
     RestTemplate restTemplate;
 
     @Autowired
-    public UserController(Environment env, RestTemplate restTemplate, UserService userService) {
+    public UserController(Environment env, RestTemplate restTemplate, IUserService userService) {
         this.env = env;
         this.restTemplate = restTemplate;
         this.userService = userService;
@@ -49,6 +49,7 @@ public class UserController {
         UserResponseModel returnValue = new ModelMapper().map(userDto,UserResponseModel.class);
         return ResponseEntity.status(HttpStatus.OK).body(returnValue);
     }
+
 
 
 

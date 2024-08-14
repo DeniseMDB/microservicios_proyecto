@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class AccountService {
@@ -60,5 +59,17 @@ public class AccountService {
 
     private AccountDTO convertToDto(Account account) {
         return modelMapper.map(account, AccountDTO.class);
+    }
+
+
+    public void deductAmount(String accountId, BigDecimal amount) throws Exception {
+        Optional<Account> accountOptional = accountRepository.findByAccountId(accountId);
+        if (accountOptional.isPresent()){
+            Account account = accountOptional.get();
+            account.setBalance(account.getBalance().subtract(amount));
+            accountRepository.save(account);
+        }else{
+            throw new Exception("Account does not exist");
+        }
     }
 }
